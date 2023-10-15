@@ -1,7 +1,7 @@
 from telebot.handler_backends import State, StatesGroup
 
 
-class ProductState(StatesGroup):
+class AddProductState(StatesGroup):
     """Класс с состояниями бота"""
 
     name = State()
@@ -9,3 +9,13 @@ class ProductState(StatesGroup):
     description = State()
     image = State()
     id_category = State()
+
+class DeleteProductState(StatesGroup):
+    """Класс с состояниями бота"""
+
+    choice = State()
+
+class UpdateProductState(StatesGroup):
+    """Класс с состояниями бота"""
+
+    choice = State()
