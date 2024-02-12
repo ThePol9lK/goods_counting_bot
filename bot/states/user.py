@@ -17,3 +17,6 @@ class UpdateUserState(StatesGroup):
     """Класс с состояниями бота"""
 
     choice = State()
+    name = State()
+    telegram = State()
+    admin = State()

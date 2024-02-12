@@ -69,6 +69,7 @@ def add_name_category(message: Message):
         bot.send_message(message.from_user.id, "Новая категория добавлена")
     else:
         bot.send_message(message.from_user.id, "Произошла ошибка")
+    bot.delete_state(message.from_user.id, message.chat.id)
 
 
 # Добавление товара
@@ -122,3 +123,4 @@ def add_photo_product(message: Message):
             bot.send_message(message.from_user.id, "Новый товар добавлен")
         else:
             bot.send_message(message.from_user.id, "Произошла ошибка")
+    bot.delete_state(message.from_user.id, message.chat.id)

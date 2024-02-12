@@ -13,9 +13,9 @@ async def create(data: ProductDTO.Product = None, db: Session = Depends(get_db))
     return ProductServices.create_product(data, db)
 
 
-@router.get('/all', tags=['product'])
-async def get(db: Session = Depends(get_db)):
-    return ProductServices.get_all_products(db)
+@router.get('/all/{id_cat}', tags=['product'])
+async def get(id_cat: int = None,db: Session = Depends(get_db)):
+    return ProductServices.get_all_products(id_cat, db)
 
 
 @router.get('/{id}', tags=['product'])

@@ -42,13 +42,13 @@ def get_user_kb() -> InlineKeyboardMarkup:
         ]
     )
 
-def get_product_kb() -> InlineKeyboardMarkup:
+def get_product_kb(cat_id) -> InlineKeyboardMarkup:
     """
     Клавиатура для inline кнопок
     :param:
     :return: keyboard: InlineKeyboardMarkup
     """
-    url = 'http://10.5.0.5:8000/product/all'
+    url = f'http://10.5.0.5:8000/product/all/{cat_id}'
     queryResponse = requests.get(url).json()
 
     return InlineKeyboardMarkup(

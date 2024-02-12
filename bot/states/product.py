@@ -17,5 +17,9 @@ class DeleteProductState(StatesGroup):
 
 class UpdateProductState(StatesGroup):
     """Класс с состояниями бота"""
-
+    id_category = State()
     choice = State()
+    name = State()
+    count = State()
+    description = State()
+    image = State()

@@ -14,7 +14,7 @@ from states.user import AddUserState, DeleteUserState, UpdateUserState
 from states.product import AddProductState, DeleteProductState, UpdateProductState
 from states.category import AddCategoryState, DeleteCategoryState, UpdateCategoryState
 
-from keyboards.inline.category_kb import get_category_kb, get_user_kb, get_product_kb
+from keyboards.inline.category_kb import get_category_kb, get_user_kb
 
 
 @bot.message_handler(commands=["admin"])
@@ -64,9 +64,11 @@ def check_action(call: CallbackQuery):
         elif data['template'] == 'category':
             bot.set_state(call.from_user.id, DeleteCategoryState.choice, call.message.chat.id)
             bot.send_message(call.from_user.id, "Выбери категорию для удаления", reply_markup=get_category_kb())
+
+        #Доработать выбор категории
         elif data['template'] == 'product':
             bot.set_state(call.from_user.id, DeleteProductState.choice, call.message.chat.id)
-            bot.send_message(call.from_user.id, "Выбери товар для удаления", reply_markup=get_product_kb())
+            bot.send_message(call.from_user.id, "Выбери категорию товара для удаления", reply_markup=get_category_kb())
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'change', state=AdminState.step_2)
@@ -79,6 +81,6 @@ def check_action(call: CallbackQuery):
             bot.set_state(call.from_user.id, UpdateCategoryState.choice, call.message.chat.id)
             bot.send_message(call.from_user.id, "Выбери категорию для изменения", reply_markup=get_category_kb())
         elif data['template'] == 'product':
-            bot.set_state(call.from_user.id, UpdateProductState.choice, call.message.chat.id)
-            bot.send_message(call.from_user.id, "Выбери товар для изменения", reply_markup=get_product_kb())
+            bot.set_state(call.from_user.id, UpdateProductState.id_category, call.message.chat.id)
+            bot.send_message(call.from_user.id, "Выбери категорию товара для изменения", reply_markup=get_category_kb())
 

@@ -12,12 +12,11 @@ router = APIRouter()
 async def create(data: TransactionDTO.Transaction = None, db: Session = Depends(get_db)):
     return TransactionServices.create_transaction(data, db)
 
+@router.get('/all', tags=['transaction'])
+async def get(db: Session = Depends(get_db)):
+    return TransactionServices.get_all_transaction(db)
+
 
 @router.get('/{id}', tags=['transaction'])
 async def get(id: int = None, db: Session = Depends(get_db)):
     return TransactionServices.get_transaction(id, db)
-
-
-@router.get('/all', tags=['transaction'])
-async def get(db: Session = Depends(get_db)):
-    return TransactionServices.get_all_transaction(db)

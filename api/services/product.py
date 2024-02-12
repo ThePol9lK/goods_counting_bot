@@ -22,8 +22,8 @@ def get_product(id: int, db):
     return db.query(Product).filter(Product.id == id).first()
 
 
-def get_all_products(db):
-    return db.query(Product).all()
+def get_all_products(cat_id, db):
+    return db.query(Product).filter(Product.id_category == cat_id).all()
 
 
 def update_product(id: int, data: product.Product, db: Session):
