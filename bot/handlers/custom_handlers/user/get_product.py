@@ -67,7 +67,6 @@ def finish_transaction(message: Message):
         queryResponse_user = requests.get(user_url).json()
         for count in range(len(queryResponse_user)):
             if queryResponse_user[count]["id_telegram"] == str(message.from_user.id):
-                print('Я тут')
                 id_user = queryResponse_user[count]["id"]
 
                 url_transaction = 'http://10.5.0.5:8000/transaction'
@@ -77,9 +76,7 @@ def finish_transaction(message: Message):
                                       "description": message.text,
                                       "count": add_data['count']
                                     }
-                print(param_transaction)
                 queryResponse = requests.post(url_transaction, json=param_transaction)
-                print(queryResponse)
                 if queryResponse.status_code == 200:
                     bot.send_message(message.from_user.id, "Записали данные")
                 else:

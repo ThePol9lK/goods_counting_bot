@@ -10,7 +10,8 @@ def template_kb() -> InlineKeyboardMarkup:
     template_dict = {
         "Пользователь": "user",
         "Категория": "category",
-        "Товар": "product"
+        "Товар": "product",
+        "Посмотреть транзакции": "transaction"
     }
 
     return InlineKeyboardMarkup(

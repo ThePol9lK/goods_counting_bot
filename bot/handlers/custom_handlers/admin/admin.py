@@ -16,11 +16,28 @@ from states.category import AddCategoryState, DeleteCategoryState, UpdateCategor
 
 from keyboards.inline.category_kb import get_category_kb, get_user_kb
 
+from utils.misc.get_admin import get_admin_users
+
+
+def is_admin(user_id: str, admin_users: list) -> bool:
+    """
+    Проверяет, является ли пользователь администратором.
+
+    :param user_id: ID пользователя для проверки
+    :param admin_users: Список администраторов с их данными
+    :return: True, если пользователь является администратором, в противном случае False
+    """
+    return any(user_id == admin_user["id_telegram"] for admin_user in admin_users)
+
 
 @bot.message_handler(commands=["admin"])
 def select_template(message: Message):
-    bot.send_message(message.from_user.id, "Выбери категорию из меню", reply_markup=template_kb())
-    bot.set_state(message.from_user.id, AdminState.step_1, message.chat.id)
+    admin_users = get_admin_users()
+    if is_admin(str(message.from_user.id), admin_users):
+        bot.send_message(message.from_user.id, "Выбери категорию из меню", reply_markup=template_kb())
+        bot.set_state(message.from_user.id, AdminState.step_1, message.chat.id)
+    else:
+        bot.send_message(message.from_user.id, "Извините, у вас нет доступа к этой команде.")
 
 # ##
 # @bot.message_handler(commands=["select"])
@@ -31,6 +48,38 @@ def select_template(message: Message):
 #     text = queryResponse['description']
 #     bot.send_photo(message.from_user.id, img, caption=text)
 # ##
+
+@bot.callback_query_handler(func=lambda call: call.data == 'transaction', state=AdminState.step_1)
+def show_transaction(call: CallbackQuery):
+    bot.send_message(call.from_user.id, "Все значения транзакций:")
+    url = f"http://10.5.0.5:8000/transaction/all"
+    queryResponse = requests.get(url).json()
+
+    for transaction in queryResponse:
+        take_count = transaction['count']
+        description = transaction['description']
+
+        product_id = transaction['id_product']
+        user_id = transaction['id_user']
+
+        user_url = f"http://10.5.0.5:8000/user/{user_id}"
+        product_url = f"http://10.5.0.5:8000/product/{product_id}"
+
+        userqueryResponse = requests.get(user_url).json()
+        if userqueryResponse == None:
+            user_name = "Пользователь удален"
+        else:
+            user_name = userqueryResponse['name']
+
+        productqueryResponse = requests.get(product_url).json()
+        product_name = productqueryResponse['name']
+        current_count = productqueryResponse['count']
+
+        text = f'Пользователь с именем {user_name} взял товар {product_name} в количестве {take_count}. Сейчас на складе {current_count} количества этого товара. Приписка от пользователя {description}. '
+
+        bot.send_message(call.from_user.id, text)
+
+
 
 @bot.callback_query_handler(func=lambda call: True, state=AdminState.step_1)
 def select_action(call: CallbackQuery):
@@ -83,4 +132,3 @@ def check_action(call: CallbackQuery):
         elif data['template'] == 'product':
             bot.set_state(call.from_user.id, UpdateProductState.id_category, call.message.chat.id)
             bot.send_message(call.from_user.id, "Выбери категорию товара для изменения", reply_markup=get_category_kb())
-
